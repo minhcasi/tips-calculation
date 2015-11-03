@@ -14,6 +14,6 @@ Completed:
 Notes:
 This only works for iPhone Retina 4" in Portrait and Landscape orientation with auto layout design but it's' not compatable with iPad. 
 
-![Video Walkthrough](tip demo.gif)
+![Video Walkthrough](tips%20demo.gif)
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
