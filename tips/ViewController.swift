@@ -52,14 +52,15 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
     
+        // init default value
         tipLabel.text = "$0.00"
         totalLabel.text = "$0.00"
         billTextField.delegate = self
         billTextField.keyboardType = .NumberPad
         billTextField.becomeFirstResponder()
         
+        // set default swipe to the modal as left swipe
         swipeToSetting.direction = .Left
         
         updateViewWithAnimation();
@@ -74,8 +75,9 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
 
     @IBAction func onEditingChanged(sender: AnyObject) {
-        let tipPercentage = UserSettings.tipPercentages[tipControl.selectedSegmentIndex]
         
+        // calculate tips and total money
+        let tipPercentage = UserSettings.tipPercentages[tipControl.selectedSegmentIndex]
         var billAmount = Double(billTextField.text!)
         if billAmount == nil {
             billAmount = 0;
@@ -85,7 +87,6 @@ class ViewController: UIViewController, UITextFieldDelegate {
         let total = billAmount! + tip
         
         tipLabel.text = String(format: "$%.2f", tip)
-        
         showTotalLabel(total)
         
         updateViewWithAnimation()
@@ -121,6 +122,8 @@ class ViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
+    
+    // open modal for setting
     @IBAction func swipeToSettings(sender: AnyObject) {
         performSegueWithIdentifier("performSegue", sender: self)
     }
@@ -181,7 +184,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
 
 
 extension ViewController: SettingDelegate {
-    func updateData(data: String) {
+    func callBackToMainView() {
         self.loadUserSetting()
     }
 }

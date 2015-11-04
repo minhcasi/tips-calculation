@@ -8,9 +8,9 @@
 
 import UIKit
 
-
+// protocal to connect to main view
 protocol SettingDelegate {
-    func updateData(data: String)
+    func callBackToMainView()
 }
 
 class SettingViewController: UIViewController {
@@ -19,19 +19,20 @@ class SettingViewController: UIViewController {
     @IBOutlet weak var backButton: UIButton!
     var delegate: SettingDelegate?
 
+    // close current modal and back to main
     func closeModal(sender: AnyObject) {
         dismissViewControllerAnimated(true, completion: nil)
         
-        
-        self.delegate?.updateData("")
-//        let viewController = sender.sourceViewController as? ViewController
-//        viewController!.loadUserSetting()
+        // callback to trigger event update the main view
+        self.delegate?.callBackToMainView()
     }
     
+    // back button event
     @IBAction func backToHomePage(sender: AnyObject) {
         closeModal(sender)
     }
     
+    // swipe event to close modal
     @IBAction func swipeToHomePage(sender: AnyObject) {
         closeModal(sender)
     }
@@ -39,17 +40,18 @@ class SettingViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // load from data setting for view
         defaultPercent.selectedSegmentIndex = UserSettings.defaultTipPercentIndex
         defaultStyle.on = UserSettings.darkStyle
     }
     
+    // change tab percent event
     @IBAction func changePercent(sender: AnyObject) {
         UserSettings.defaultTipPercentIndex = defaultPercent.selectedSegmentIndex
     }
     
+    // change style option event
     @IBAction func changeStyle(sender: AnyObject) {
         UserSettings.darkStyle = defaultStyle.on
     }
-    
-    
 }
