@@ -18,18 +18,24 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     @IBOutlet weak var tipControl: UISegmentedControl!
     
+    @IBOutlet weak var mainView: UIView!
+    
     @IBOutlet weak var resultsView: UIView!
 
     @IBOutlet weak var inputsView: UIView!
     
     @IBOutlet weak var tipView: UIView!
     
+    @IBOutlet weak var totalView: UIView!
+    
+
     @IBOutlet weak var totalForTwoLabel: UILabel!
     
     @IBOutlet weak var totalForThreeLabel: UILabel!
     
     @IBOutlet weak var totalForFourLabel: UILabel!
     
+    @IBOutlet var swipeToSetting: UISwipeGestureRecognizer!
     
     // only accept number key
     func textField(textField: UITextField,
@@ -54,8 +60,11 @@ class ViewController: UIViewController, UITextFieldDelegate {
         billTextField.keyboardType = .NumberPad
         billTextField.becomeFirstResponder()
         
+        swipeToSetting.direction = .Left
+        
         updateViewWithAnimation();
-
+        
+        loadUserSetting();
     }
 
     override func didReceiveMemoryWarning() {
@@ -65,9 +74,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
 
     @IBAction func onEditingChanged(sender: AnyObject) {
-        var tipPercentages = [0.18, 0.2, 0.22]
-        let tipPercentage = tipPercentages[tipControl.selectedSegmentIndex]
-        
+        let tipPercentage = UserSettings.tipPercentages[tipControl.selectedSegmentIndex]
         
         var billAmount = Double(billTextField.text!)
         if billAmount == nil {
@@ -98,7 +105,6 @@ class ViewController: UIViewController, UITextFieldDelegate {
         
         totalForFourLabel.text = String(format: "$%.2f", total / 4)
     }
-
     
     // animate the view
     func updateViewWithAnimation() {
@@ -113,6 +119,10 @@ class ViewController: UIViewController, UITextFieldDelegate {
                     self.showResultsView()
                 }, completion: nil)
         }
+    }
+    
+    @IBAction func swipeToSettings(sender: AnyObject) {
+        performSegueWithIdentifier("performSegue", sender: self)
     }
     
     // show only input view
@@ -136,13 +146,42 @@ class ViewController: UIViewController, UITextFieldDelegate {
         resultsView.alpha = 1
         
         var resultFrame: CGRect = resultsView.frame
-        resultFrame.origin.y = 86
+        resultFrame.origin.y = 120
         resultsView.frame = resultFrame
         
         
         var inputFrame: CGRect = inputsView.frame
-        inputFrame.origin.y = 30
+        inputFrame.origin.y = 39
         inputsView.frame = inputFrame
+    }
+    
+    // init data on frist loading
+    func loadUserSetting() {
+        tipControl.selectedSegmentIndex = UserSettings.defaultTipPercentIndex
+        
+        if UserSettings.darkStyle {
+            mainView.backgroundColor = UserSettings.colorDark
+            tipView.backgroundColor = UserSettings.colorDark
+            totalView.backgroundColor = UserSettings.colorDark
+        }
+        else {
+            mainView.backgroundColor = UserSettings.colorMain
+            tipView.backgroundColor = UserSettings.colorTip
+            totalView.backgroundColor = UserSettings.colorTotal
+        }
+    }
+
+    // for the call back from setting
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "performSegue" {
+            (segue.destinationViewController as! SettingViewController).delegate = self
+        }
     }
 }
 
+
+extension ViewController: SettingDelegate {
+    func updateData(data: String) {
+        self.loadUserSetting()
+    }
+}
